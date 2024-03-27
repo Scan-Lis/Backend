@@ -31,5 +31,5 @@ public class Usuario {
     private String contrasena;
 
     @Column(name = "rol")
-    private Integer rol;
+    private String rol;
 }
