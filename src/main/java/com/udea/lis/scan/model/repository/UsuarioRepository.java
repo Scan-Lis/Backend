@@ -1,4 +1,4 @@
-package com.udea.lis.scan.repository;
+package com.udea.lis.scan.model.repository;
 
 import com.udea.lis.scan.model.entity.Usuario;
 import org.springframework.data.repository.CrudRepository;

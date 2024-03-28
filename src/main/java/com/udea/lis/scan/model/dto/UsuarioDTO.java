@@ -1,4 +1,4 @@
-package com.udea.lis.scan.dto;
+package com.udea.lis.scan.model.dto;
 
 import lombok.Data;
 import lombok.Getter;
