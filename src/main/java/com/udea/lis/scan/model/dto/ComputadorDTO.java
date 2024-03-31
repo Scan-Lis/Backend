@@ -1,0 +1,16 @@
+package com.udea.lis.scan.model.dto;
+
+import com.udea.lis.scan.model.enums.EEstado;
+import com.udea.lis.scan.model.enums.ESala;
+import lombok.*;
+
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ComputadorDTO {
+    private Integer id;
+    private EEstado estado;
+    private ESala sala;
+}
