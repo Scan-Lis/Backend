@@ -1,5 +1,4 @@
 package com.udea.lis.scan.model.mapper;
-
 import com.udea.lis.scan.model.dto.UsuarioDTO;
 import com.udea.lis.scan.model.entity.Usuario;
 import org.mapstruct.Mapper;
