@@ -1,9 +1,10 @@
-package com.udea.lis.scan.mapper;
-
-import com.udea.lis.scan.dto.UsuarioDTO;
+package com.udea.lis.scan.model.mapper;
+import com.udea.lis.scan.model.dto.UsuarioDTO;
 import com.udea.lis.scan.model.entity.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
@@ -22,6 +23,10 @@ public interface UsuarioMapper {
     @Mapping(target = "contrasena", source = "contrasena")
     @Mapping(target = "rol", source = "rol")
     UsuarioDTO toUsuarioDTO(Usuario usuario);
+
+    List<UsuarioDTO> toUsuariosDTOList(List<Usuario> usuarios);
+
+    List<Usuario> toUsuariosList(List<UsuarioDTO> usuariosDTO);
 
 
 }
