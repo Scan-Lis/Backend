@@ -23,7 +23,6 @@ public class AuthController {
     @Operation(summary = "Login", description = "Login para obtener token de autenticación", tags = { "auth" } , responses = {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "400", description = "Invalid user/password", content = @Content(schema = @Schema(implementation = String.class))) })
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginUserDto loginUserDto){
         try {
@@ -41,7 +40,7 @@ public class AuthController {
         try {
             return new ResponseEntity<>(AuthService.registro(createUserDto), HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Usuario o contraseña incorrectos");
+            return ResponseEntity.badRequest().body("Error al registrar usuario");
         }
 
     }
