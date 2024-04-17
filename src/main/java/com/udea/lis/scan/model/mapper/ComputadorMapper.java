@@ -12,12 +12,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ComputadorMapper {
-    @Mapping(target = "id", source = "id")
+    @Mapping(target = "id", source = "computadorDTO", qualifiedByName = "construirId")
     @Mapping(target = "estado", source = "estado", qualifiedByName = "EnumEstadoToString")
     @Mapping(target = "sala", source = "sala", qualifiedByName = "EnumSalaToString")
     Computador toComputador(ComputadorDTO computadorDTO);
 
-    @Mapping(target = "id", source = "id")
+    @Mapping(target = "numeroPc", source = "id", qualifiedByName = "construirIdInverso")
     @Mapping(target = "estado", source = "estado", qualifiedByName = "StringToEnumEstado")
     @Mapping(target = "sala", source = "sala", qualifiedByName = "StringToEnumSala")
     ComputadorDTO toComputadorDTO(Computador computador);
@@ -26,6 +26,17 @@ public interface ComputadorMapper {
 
     List<Computador> toComputadoresList(List<ComputadorDTO> computadoresDTO);
 
+
+    @Named("construirId")
+    default String construirId(ComputadorDTO computadorDTO) {
+        Integer numeroPc = computadorDTO.getNumeroPc();
+        String numeroPcString = numeroPc > 9 ? numeroPc.toString() : "0" + numeroPc.toString();
+        return computadorDTO.getSala() + "Pc"+ numeroPcString;
+    }
+    @Named("construirIdInverso")
+    default Integer construirIdInverso(String id) {
+        return Integer.parseInt(id.substring(id.length() - 2));
+    }
 
     @Named("EnumEstadoToString")
     default String EnumEstadoToString(EEstado estado){
