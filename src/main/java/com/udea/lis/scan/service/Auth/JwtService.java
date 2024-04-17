@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.udea.lis.scan.model.entity.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,25 +32,23 @@ public class JwtService {
     //generate token
     public String createToken(Authentication auth){
         Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
-        String username = auth.getPrincipal().toString();
-        System.out.println("Username: " + username);
+        Usuario usuario = (Usuario) auth.getPrincipal();
         String rol = auth.getAuthorities()
                 .stream()
                 .map(role -> role.getAuthority())
                 .findFirst().orElseThrow();
         return JWT.create()
                 .withIssuer(userGenerator)
-                .withSubject(username)
+                .withSubject(usuario.getNombre())
                 .withClaim("rol", rol)
+                .withClaim("nombre", usuario.getNombre())
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
-                .withJWTId("JWT-" + username)
+                .withJWTId("JWT-" + usuario.getCorreo())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
 
     }
-
-    //validate token
     public DecodedJWT validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
