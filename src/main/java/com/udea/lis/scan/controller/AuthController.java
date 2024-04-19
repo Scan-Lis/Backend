@@ -22,7 +22,7 @@ public class AuthController {
     private AuthService AuthService;
     @Operation(summary = "Login", description = "Login para obtener token de autenticación", tags = { "auth" } , responses = {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
-            @ApiResponse(responseCode = "400", description = "Invalid user/password", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "400", description = "Usuario o contraseña incorrectos", content = @Content(schema = @Schema(implementation = String.class))) })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginUserDto loginUserDto){
         try {
