@@ -76,7 +76,6 @@ public class ComputadorController {
 
     @Operation(summary = "Eliminar un computador", description = "eliminar comptador a traves de la sala y el numero del computador", responses = {
             @ApiResponse(responseCode = "200", description = "Computador eliminado", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
-            @ApiResponse(responseCode = "400", description = "Sala o numero invalido", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "404", description = "Computadores no encontrados", content = @Content(schema = @Schema(implementation = String.class))) })
     @DeleteMapping("/{sala}/{numeroPc}")
     public ResponseEntity<?> deleteComputador(@PathVariable ESala sala, @PathVariable Integer numeroPc) {
