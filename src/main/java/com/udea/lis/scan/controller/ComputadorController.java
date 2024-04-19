@@ -39,7 +39,6 @@ public class ComputadorController {
 
     @Operation(summary = "Obtener un computador", description = "Obtener un computador por el nombre de la  sala en la que se encuentra y el numero del pc", responses = {
             @ApiResponse(responseCode = "200", description = "Computador encontrado", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
-            @ApiResponse(responseCode = "400", description = "Sala no encontrada o numero invalido", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "404", description = "Computador no encontrado", content = @Content(schema = @Schema(implementation = String.class))) })
     @GetMapping("/{sala}/{numeroPc}")
     public ResponseEntity<?> getComputadorByNumeroPcAndSala(@PathVariable ESala sala, @PathVariable Integer numeroPc) {
