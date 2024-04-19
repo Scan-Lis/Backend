@@ -9,6 +9,13 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    env:
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_TIME_EXPIRATION: ${{ secrets.JWT_TIME_EXPIRATION }}
+
     steps:
       - uses: actions/checkout@v3
         with:
