@@ -1,4 +1,4 @@
-package com.udea.lis.scan.service.ReporteService;
+package com.udea.lis.scan.service.reporteservice;
 
 import com.udea.lis.scan.model.dto.ReporteDTO;
 

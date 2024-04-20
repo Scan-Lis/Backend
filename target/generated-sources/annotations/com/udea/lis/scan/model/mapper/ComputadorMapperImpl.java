@@ -2,8 +2,6 @@ package com.udea.lis.scan.model.mapper;
 
 import com.udea.lis.scan.model.dto.ComputadorDTO;
 import com.udea.lis.scan.model.entity.Computador;
-import com.udea.lis.scan.model.enums.EEstado;
-import com.udea.lis.scan.model.enums.ESala;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-19T01:31:19-0500",
+    date = "2024-04-19T23:03:16-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
 )
 @Component
@@ -26,8 +24,8 @@ public class ComputadorMapperImpl implements ComputadorMapper {
         Computador computador = new Computador();
 
         computador.setId( construirId( computadorDTO ) );
-        computador.setEstado( EnumEstadoToString( computadorDTO.getEstado() ) );
-        computador.setSala( EnumSalaToString( computadorDTO.getSala() ) );
+        computador.setEstado( enumEstadoToString( computadorDTO.getEstado() ) );
+        computador.setSala( enumSalaToString( computadorDTO.getSala() ) );
 
         return computador;
     }
@@ -38,15 +36,11 @@ public class ComputadorMapperImpl implements ComputadorMapper {
             return null;
         }
 
-        Integer numeroPc = null;
-        EEstado estado = null;
-        ESala sala = null;
+        ComputadorDTO computadorDTO = new ComputadorDTO();
 
-        numeroPc = construirIdInverso( computador.getId() );
-        estado = StringToEnumEstado( computador.getEstado() );
-        sala = StringToEnumSala( computador.getSala() );
-
-        ComputadorDTO computadorDTO = new ComputadorDTO( numeroPc, estado, sala );
+        computadorDTO.setNumeroPc( construirIdInverso( computador ) );
+        computadorDTO.setEstado( stringToEnumEstado( computador.getEstado() ) );
+        computadorDTO.setSala( stringToEnumSala( computador.getSala() ) );
 
         return computadorDTO;
     }

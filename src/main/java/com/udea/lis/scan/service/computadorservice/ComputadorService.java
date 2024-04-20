@@ -1,14 +1,10 @@
-package com.udea.lis.scan.service.computadorService;
-
+package com.udea.lis.scan.service.computadorservice;
 import com.udea.lis.scan.model.dto.ComputadorDTO;
 import com.udea.lis.scan.model.entity.Computador;
 import com.udea.lis.scan.model.mapper.ComputadorMapper;
 import com.udea.lis.scan.model.repository.ComputadorRepository;
-import com.udea.lis.scan.service.computadorService.IComputadorService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,18 +22,15 @@ public class ComputadorService implements IComputadorService {
             throw new RuntimeException("No se encontraron computadores en la sala " + sala);
         }
         return computadorMapper.toComputadoresDTOList(computadores);
-
-
     }
     @Override
     public Iterable<ComputadorDTO> getComputadores() throws RuntimeException {
-
         List<Computador> computadores = (List<Computador>) computadorRepository.findAll();
         if (computadores.isEmpty()){
             throw new RuntimeException("No se encontraron computadores");
         }
+        System.out.println(computadores);
         return computadorMapper.toComputadoresDTOList(computadores);
-        
     }
     @Override
     public ComputadorDTO saveComputador(ComputadorDTO computadorDTO) throws RuntimeException {
@@ -69,8 +62,6 @@ public class ComputadorService implements IComputadorService {
             return computadorMapper.toComputadorDTO(computador.get());
         }
         throw new RuntimeException("Computador con el id " + id + " no encontrado");
-
     }
-
 
 }

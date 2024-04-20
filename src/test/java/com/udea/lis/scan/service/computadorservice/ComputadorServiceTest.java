@@ -1,4 +1,4 @@
-package com.udea.lis.scan.service.computadorService;
+package com.udea.lis.scan.service.computadorservice;
 
 import com.udea.lis.scan.model.dto.ComputadorDTO;
 import com.udea.lis.scan.model.entity.Computador;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class ComputadorServiceTest {
+class ComputadorServiceTest {
     @Mock
     private ComputadorRepository computadorRepository;
 
@@ -28,7 +28,7 @@ public class ComputadorServiceTest {
     private ComputadorService computadorService;
 
     @Test
-    public void testGetComputadoresBySala_Success() {
+    void testGetComputadoresBySala_Success() {
         // Arrange
         String sala = "Sala1";
         ArrayList<Computador> computadores = new ArrayList<>();

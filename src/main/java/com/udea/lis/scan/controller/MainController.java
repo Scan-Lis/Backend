@@ -2,7 +2,6 @@ package com.udea.lis.scan.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -10,22 +9,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
 
     @GetMapping("/")
-    public String Hello(){
+    public String hello(){
         return "Hello World";
     }
 
     @GetMapping("/test")
-    public String HelloTest(){
+    public String helloTest(){
         return "Hello Test";
     }
 
     @GetMapping("/admin")
-    public String HelloAdmin(){
+    public String helloAdmin(){
         return "Hello Admin";
     }
 
     @GetMapping("/auxiliar")
-    public String HelloAuxiliar(){
+    public String helloAuxiliar(){
         return "Hello Auxiliar";
     }
 

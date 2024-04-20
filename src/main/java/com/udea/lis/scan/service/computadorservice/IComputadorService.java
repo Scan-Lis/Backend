@@ -1,8 +1,6 @@
-package com.udea.lis.scan.service.computadorService;
+package com.udea.lis.scan.service.computadorservice;
 
 import com.udea.lis.scan.model.dto.ComputadorDTO;
-
-import java.util.Optional;
 
 public interface IComputadorService {
     public Iterable<ComputadorDTO> getComputadoresBySala(String sala);

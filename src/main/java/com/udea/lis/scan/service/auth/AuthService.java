@@ -1,4 +1,4 @@
-package com.udea.lis.scan.service.Auth;
+package com.udea.lis.scan.service.auth;
 
 import com.udea.lis.scan.model.dto.UsuarioDTO;
 import com.udea.lis.scan.model.dto.auth.LoginUserDto;
@@ -7,22 +7,15 @@ import com.udea.lis.scan.model.entity.Usuario;
 import com.udea.lis.scan.model.mapper.UsuarioMapper;
 import com.udea.lis.scan.model.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -53,7 +46,7 @@ public class AuthService implements UserDetailsService {
             String accessToken = jwtService.createToken(authentication);
             return new ResponseAuth(accessToken);
         }catch (UsernameNotFoundException e) {
-            throw new UsernameNotFoundException("Usuario no encontrado");
+            throw new UsernameNotFoundException("Usuario no fue encontrado");
         }catch (BadCredentialsException e){
             throw new BadCredentialsException("Contraseña incorrecta");
         }
@@ -71,7 +64,7 @@ public class AuthService implements UserDetailsService {
             return new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
         }
         catch (Exception e){
-            throw new UsernameNotFoundException("Usuario no encontrado");
+            throw new UsernameNotFoundException("Usuario es encontrado");
         }
 
     }
