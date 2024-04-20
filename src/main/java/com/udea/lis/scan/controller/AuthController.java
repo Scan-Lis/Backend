@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthController {
     private AuthService authService;
-    @Operation(summary = "Login", description = "Login para obtener token de autenticación", tags = { "auth" } , responses = {
+    @Operation(summary = "Login", description = "Login para obtener token de autenticación", tags = { "authenticaction" } , responses = {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "400", description = "Usuario o contraseña incorrectos", content = @Content(schema = @Schema(implementation = String.class))) })
     @PostMapping("/login")
@@ -30,7 +30,7 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "Registro", description = "Registro de usuario", tags = { "auth" }, responses = {
+    @Operation(summary = "Registro", description = "Registro de usuario", tags = { "authenticaction" }, responses = {
             @ApiResponse(responseCode = "201", description = "Usuario creado", content = @Content(schema = @Schema(implementation = ResponseAuth.class)) ),
             @ApiResponse(responseCode = "400", description = "Error al registrar usuario", content = @Content(schema = @Schema(implementation = String.class))) })
     @PostMapping("/register")
