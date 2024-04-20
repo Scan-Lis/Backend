@@ -29,6 +29,10 @@ public class Reporte {
     @Column(name = "almacenado")
     private Boolean almacenado;
 
+    @ManyToOne
+    @JoinColumn(name = "id_pc", nullable = false)
+    private Computador computador;
+
 
 
 }
