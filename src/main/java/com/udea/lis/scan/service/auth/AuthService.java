@@ -54,16 +54,15 @@ public class AuthService implements UserDetailsService {
 
     }
 
-    public Authentication authenticate(String userName, String password) throws UsernameNotFoundException, BadCredentialsException {
+    public Authentication authenticate(String userName, String password){
         try {
             UserDetails usuario = this.loadUserByUsername(userName);
-
             if(!passwordEncoder.matches(password, usuario.getPassword())){
                 throw new BadCredentialsException("Contraseña incorrecta");
             }
             return new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
         }
-        catch (Exception e){
+        catch (UsernameNotFoundException e){
             throw new UsernameNotFoundException("Usuario es encontrado");
         }
 
