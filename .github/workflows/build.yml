@@ -13,8 +13,11 @@ jobs:
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       JWT_TIME_EXPIRATION: ${{ secrets.JWT_TIME_EXPIRATION }}
+
 
     steps:
       - uses: actions/checkout@v3
