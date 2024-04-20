@@ -22,7 +22,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "400", description = "Usuario o contraseña incorrectos", content = @Content(schema = @Schema(implementation = String.class))) })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginUserDto loginUserDto){
+    public ResponseEntity<Object> login(@RequestBody LoginUserDto loginUserDto){
         try {
             return new ResponseEntity<>(authService.login(loginUserDto), HttpStatus.OK);
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "Usuario creado", content = @Content(schema = @Schema(implementation = ResponseAuth.class)) ),
             @ApiResponse(responseCode = "400", description = "Error al registrar usuario", content = @Content(schema = @Schema(implementation = String.class))) })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UsuarioDTO createUserDto){
+    public ResponseEntity<Object> register(@RequestBody UsuarioDTO createUserDto){
         try {
             return new ResponseEntity<>(authService.registro(createUserDto), HttpStatus.CREATED);
         } catch (Exception e) {

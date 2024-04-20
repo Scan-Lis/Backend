@@ -63,8 +63,8 @@ public class ComputadorController {
         try {
             return ResponseEntity.ok(computadorService.saveComputador(computadorDTO));
         } catch (RuntimeException e) {
-            ComputadorDTO ComputadorSinDatos = new ComputadorDTO();
-            return ResponseEntity.badRequest().body(ComputadorSinDatos);
+            ComputadorDTO computadorSinDatos = new ComputadorDTO();
+            return ResponseEntity.badRequest().body(computadorSinDatos);
         }
     }
 
