@@ -1,13 +1,11 @@
 package com.udea.lis.scan.config.security.jwt;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.udea.lis.scan.service.Auth.JwtService;
+import com.udea.lis.scan.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

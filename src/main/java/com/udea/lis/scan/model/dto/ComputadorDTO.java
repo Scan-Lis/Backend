@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ComputadorDTO {
     private Integer numeroPc;
     private EEstado estado;

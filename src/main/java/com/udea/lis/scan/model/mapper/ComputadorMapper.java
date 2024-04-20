@@ -13,13 +13,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ComputadorMapper {
     @Mapping(target = "id", source = "computadorDTO", qualifiedByName = "construirId")
-    @Mapping(target = "estado", source = "estado", qualifiedByName = "EnumEstadoToString")
-    @Mapping(target = "sala", source = "sala", qualifiedByName = "EnumSalaToString")
+    @Mapping(target = "estado", source = "estado", qualifiedByName = "enumEstadoToString")
+    @Mapping(target = "sala", source = "sala", qualifiedByName = "enumSalaToString")
     Computador toComputador(ComputadorDTO computadorDTO);
 
-    @Mapping(target = "numeroPc", source = "id", qualifiedByName = "construirIdInverso")
-    @Mapping(target = "estado", source = "estado", qualifiedByName = "StringToEnumEstado")
-    @Mapping(target = "sala", source = "sala", qualifiedByName = "StringToEnumSala")
+    @Mapping(target = "numeroPc", source = "computador", qualifiedByName = "construirIdInverso")
+    @Mapping(target = "estado", source = "estado", qualifiedByName = "stringToEnumEstado")
+    @Mapping(target = "sala", source = "sala", qualifiedByName = "stringToEnumSala")
     ComputadorDTO toComputadorDTO(Computador computador);
 
     List<ComputadorDTO> toComputadoresDTOList(List<Computador> computadores);
@@ -34,27 +34,28 @@ public interface ComputadorMapper {
         return computadorDTO.getSala() + "Pc"+ numeroPcString;
     }
     @Named("construirIdInverso")
-    default Integer construirIdInverso(String id) {
+    default Integer construirIdInverso(Computador computador) {
+        String id = computador.getId();
         return Integer.parseInt(id.substring(id.length() - 2));
     }
 
-    @Named("EnumEstadoToString")
-    default String EnumEstadoToString(EEstado estado){
+    @Named("enumEstadoToString")
+    default String enumEstadoToString(EEstado estado){
         return estado.toString();
     }
 
-    @Named("StringToEnumEstado")
-    default EEstado StringToEnumEstado(String estado){
+    @Named("stringToEnumEstado")
+    default EEstado stringToEnumEstado(String estado){
         return EEstado.valueOf(estado);
     }
 
-    @Named("EnumSalaToString")
-    default String EnumSalaToString(ESala sala){
+    @Named("enumSalaToString")
+    default String enumSalaToString(ESala sala){
         return sala.toString();
     }
 
-    @Named("StringToEnumSala")
-    default ESala StringToEnumSala(String sala){
+    @Named("stringToEnumSala")
+    default ESala stringToEnumSala(String sala){
         return ESala.valueOf(sala);
     }
 

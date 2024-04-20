@@ -41,9 +41,9 @@ public class Usuario implements UserDetails {
     //metodos de la interfaz UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<GrantedAuthority> Arr = new ArrayList<>();
-        Arr.add(new SimpleGrantedAuthority("ROLE_"+rol));
-        return Arr;
+        ArrayList<GrantedAuthority> arreglo = new ArrayList<>();
+        arreglo.add(new SimpleGrantedAuthority("ROLE_"+rol));
+        return arreglo;
     }
 
     @Override

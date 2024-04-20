@@ -1,7 +1,5 @@
 package com.udea.lis.scan.model.entity;
 
-import com.udea.lis.scan.model.enums.EEstado;
-import com.udea.lis.scan.model.enums.ESala;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
