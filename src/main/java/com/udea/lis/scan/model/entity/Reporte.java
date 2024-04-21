@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Data
 @Getter
 @Setter
@@ -29,10 +31,10 @@ public class Reporte {
     @Column(name = "almacenado")
     private Boolean almacenado;
 
+    @Column(name = "fecha", length = 50)
+    private Date fecha;
+
     @ManyToOne
-    @JoinColumn(name = "id_pc", nullable = false)
+    @JoinColumn(name = "fk_pc", nullable = false)
     private Computador computador;
-
-
-
 }

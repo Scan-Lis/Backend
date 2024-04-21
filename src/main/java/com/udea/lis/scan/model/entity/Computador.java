@@ -23,6 +23,6 @@ public class Computador {
     @Column(name = "sala", length = 20)
     private String sala;
 
-    @OneToMany(mappedBy = "computador")
+    @OneToMany(mappedBy = "computador", cascade = CascadeType.ALL)
     private List<Reporte> reportes;
 }
