@@ -133,7 +133,7 @@
 				<version>0.8.10</version>
 				<configuration>
 					<excludes>
-						<exclude>com/udea/lis/scan/config/**</exclude>
+						<exclude>**/config/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
