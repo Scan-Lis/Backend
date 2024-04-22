@@ -21,6 +21,8 @@
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.organization>scan-lis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.projectKey>scan-lis</sonar.projectKey>
+		<sonar.exclusions>**/config/*</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -131,11 +133,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
-				<configuration>
-					<excludes>
-						<exclude>**/config/*</exclude>
-					</excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
