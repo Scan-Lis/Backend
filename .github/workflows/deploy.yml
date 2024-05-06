@@ -16,6 +16,7 @@ jobs:
 
     - name: Clone repository
       run: |
+        pwd
         git clone https://${{ secrets.USER_GI}}:${{ secrets.TOKEN_GI }}@${{secrets.REPOSITORY}}
       env:
         GH_TOKEN: ${{ secrets.TOKEN_GI }}
@@ -25,6 +26,7 @@ jobs:
 
     - name: Move the dir to configuration openvpn
       run: |
+        ls
         sudo mv ./dataSSHScanLis/ ${{secrets.PATH_DIR_OVPN}}
 
     - name: cd to certs and run openvpn
