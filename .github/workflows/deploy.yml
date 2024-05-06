@@ -31,7 +31,7 @@ jobs:
 
     - name: cd to certs and run openvpn
       run: |
-        cd ${{secrets.PATH_DIR_OVPN}}/certs
+        cd /etc/openvpn/dataSSHScanLis
         sudo openvpn --config ${{ secrets.CERT}} &
 
     - name: Esperar 15 segundos
