@@ -1,1 +1,47 @@
+name: Build Deploy and Run Docker
 
+on:
+  push:
+    branches:
+      - deploy
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  deployd:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Clone repository
+      run: |
+        git clone https://${{ secrets.USER_GI}}:${{ secrets.TOKEN_GI }}@${{secrets.REPOSITORY}}
+      env:
+        GH_TOKEN: ${{ secrets.TOKEN_GI }}
+
+    - name: Install OpenVPN
+      run: sudo apt-get install openvpn
+
+    - name: Move the dir to configuration openvpn
+      run: |
+        sudo mv ./certs/ ${{secrets.PATH_DIR_OVPN}}
+
+    - name: cd to certs and run openvpn
+      run: |
+        cd ${{secrets.PATH_DIR_OVPN}}/certs
+        sudo openvpn --config ${{ secrets.CERT}} &
+
+    - name: Esperar 15 segundos
+      run: sleep 10
+
+    - name: SSH Deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.WORK_DIR}}
+          git pull 
+          git checkout deploy 
