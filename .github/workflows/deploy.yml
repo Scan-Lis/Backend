@@ -43,5 +43,6 @@ jobs:
           cd ${{ secrets.WORK_DIR}}
           git pull 
           git checkout deploy 
+          docker compose down 
           docker compose build -q
           docker compose up -d
