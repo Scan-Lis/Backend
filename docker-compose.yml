@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: DbScanLis
+    env_file:
+      - .env
+    volumes:
+      - data_scanlis:/var/lib/postgresql/data
+  springboot-app:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - MAVEN_PROFILE=prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+volumes:
+  data_scanlis:
