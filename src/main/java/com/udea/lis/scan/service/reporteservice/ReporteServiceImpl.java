@@ -14,6 +14,9 @@ import com.udea.lis.scan.model.mapper.ReporteMapper;
 import com.udea.lis.scan.model.repository.ReporteRepository;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,7 +25,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ReporteServiceImpl implements IReporteService{
+public  class ReporteServiceImpl implements IReporteService{
 
     private ComputadorService computadorService;
     private ReporteRepository reporteRepository;
@@ -39,50 +42,50 @@ public class ReporteServiceImpl implements IReporteService{
     }
 
     @Override
-    public List<ReporteDTO> getReportes() throws ReporteNotFoundException {
-        List<Reporte> listaReportes = (List<Reporte>) reporteRepository.findAll();
-        if (listaReportes.isEmpty()){
+    public Page<ReporteDTO> getReportes(Pageable pageable) throws ReporteNotFoundException {
+        Page<Reporte> listaReportes = reporteRepository.findAll(pageable);
+        if (listaReportes.getTotalElements() == 0){ // si definitivamente no hay reportes
             throw new ReporteNotFoundException("no se encontraron reportes");
         }
-        return reporteMapper.toReportesDTOList(listaReportes);
+        return new PageImpl<>(reporteMapper.toReportesDTOList(listaReportes.getContent()), pageable, listaReportes.getTotalElements());
     }
 
     @Override
-    public List<ReporteDTO> getReportesByPc(ESala sala, Integer numeroPc) throws ComputadorNotFoundException, ReporteNotFoundException {
+    public Page<ReporteDTO> getReportesByPc(ESala sala, Integer numeroPc, Pageable pageable) throws ComputadorNotFoundException, ReporteNotFoundException {
         ComputadorDTO computadorDTO = computadorService.getComputadorByNumeroPcAndSala(sala.toString(), numeroPc);
         Computador computador = computadorMapper.toComputador(computadorDTO);
-        List<Reporte> listaReportes = reporteRepository.findByComputador(computador);
-        if(listaReportes.isEmpty()){
+        Page<Reporte> listaReportes = reporteRepository.findByComputador(computador, pageable);
+        if(listaReportes.getTotalElements() == 0){
             throw new ReporteNotFoundException("No se encontraron reportes en el computador: " + sala + "Pc" + numeroPc);
         }
-        return reporteMapper.toReportesDTOList(listaReportes);
+        return new PageImpl<>(reporteMapper.toReportesDTOList(listaReportes.getContent()), pageable, listaReportes.getTotalElements());
     }
 
     @Override
-    public List<ReporteDTO> getReportesBySala(ESala sala) throws ReporteNotFoundException {
-        List<Reporte> listaReportes = reporteRepository.findReportesBySala(sala.toString());
-        if(listaReportes.isEmpty()){
+    public Page<ReporteDTO> getReportesBySala(ESala sala, Pageable pageable) throws ReporteNotFoundException {
+        Page<Reporte> listaReportes = reporteRepository.findReportesBySala(sala.toString(), pageable);
+        if(listaReportes.getTotalElements() == 0){
             throw new ReporteNotFoundException("No se encontraron reportes en la sala: " + sala);
         }
-        return reporteMapper.toReportesDTOList(listaReportes);
+        return new PageImpl<>(reporteMapper.toReportesDTOList(listaReportes.getContent()), pageable, listaReportes.getTotalElements());
     }
 
     @Override
-    public List<ReporteDTO> getReportesByTipo(EReporte tipo) throws ReporteNotFoundException {
-        List<Reporte> listaReportes = reporteRepository.findByTipo(tipo.toString());
-        if(listaReportes.isEmpty()){
+    public Page<ReporteDTO> getReportesByTipo(EReporte tipo, Pageable pageable) throws ReporteNotFoundException {
+        Page<Reporte> listaReportes = reporteRepository.findByTipo(tipo.toString(), pageable);
+        if(listaReportes.getTotalElements() == 0){
             throw new ReporteNotFoundException("No se encontraron reportes de tipo: " + tipo);
         }
-        return reporteMapper.toReportesDTOList(listaReportes);
+        return new PageImpl<>(reporteMapper.toReportesDTOList(listaReportes.getContent()), pageable, listaReportes.getTotalElements());
     }
 
     @Override
-    public List<ReporteDTO> getReporteByAlmacenado(Boolean almacenado) throws ReporteNotFoundException {
-        List<Reporte> listaReportes = reporteRepository.findByAlmacenado(almacenado);
-        if(listaReportes.isEmpty()){
+    public Page<ReporteDTO> getReporteByAlmacenado(Boolean almacenado, Pageable pageable) throws ReporteNotFoundException {
+        Page<Reporte> listaReportes = reporteRepository.findByAlmacenado(almacenado, pageable);
+        if(listaReportes.getTotalElements() == 0){
             throw new ReporteNotFoundException(almacenado? "No se encontraron reportes almacenados" : "No se encontraron reportes no almacenados");
         }
-        return reporteMapper.toReportesDTOList(listaReportes);
+        return new PageImpl<>(reporteMapper.toReportesDTOList(listaReportes.getContent()), pageable, listaReportes.getTotalElements());
     }
 
     @Override
@@ -93,6 +96,7 @@ public class ReporteServiceImpl implements IReporteService{
         reporte.setComputador(computador);
         Reporte reporteCreado = reporteRepository.save(reporte);
         if (reporteRepository.existsById(reporteCreado.getId())){
+            computadorService.actualizarEstado(reporteDTO.getSala().toString(), reporteDTO.getNumeroPc());
             return reporteMapper.toReporteDTO(reporteCreado);
         }
         throw new ReporteOperationException("Error al guardar el reporte");
@@ -100,10 +104,13 @@ public class ReporteServiceImpl implements IReporteService{
 
     @Override
     public void deleteReporte(Integer id) throws ReporteNotFoundException{
-        if (!reporteRepository.existsById(id)){
+        Optional<Reporte> reporte = reporteRepository.findById(id);
+        if (!reporte.isPresent()){
             throw new ReporteNotFoundException("No existe reporte con el id: " + id);
         }
         reporteRepository.deleteById(id);
+        ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(reporte.get().getComputador());
+        computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
     }
 
     @Override
@@ -115,6 +122,10 @@ public class ReporteServiceImpl implements IReporteService{
         Reporte reporteActualizado = reporte.get();
         reporteActualizado.setAlmacenado(almacenado);
         reporteActualizado = reporteRepository.save(reporteActualizado);
+
+        ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(reporte.get().getComputador());
+        computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
+
         return reporteMapper.toReporteDTO(reporteActualizado);
     }
 

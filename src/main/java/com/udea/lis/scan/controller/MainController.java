@@ -6,6 +6,7 @@ import com.udea.lis.scan.model.entity.Reporte;
 import com.udea.lis.scan.model.mapper.ReporteMapper;
 import com.udea.lis.scan.model.repository.ComputadorRepository;
 import com.udea.lis.scan.model.repository.ReporteRepository;
+import com.udea.lis.scan.service.computadorservice.ComputadorService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,14 @@ public class MainController {
 
     ReporteMapper reporteMapper;
 
+    ComputadorService computadorService;
+
     @GetMapping("/")
     public String hello(){
+        String sala = "Telematica";
+        Integer numeroPc = 01;
+        computadorService.actualizarEstado(sala, numeroPc);
+
         return "Hello World";
     }
 

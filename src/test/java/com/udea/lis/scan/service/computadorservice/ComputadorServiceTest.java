@@ -13,10 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -55,17 +59,17 @@ class ComputadorServiceTest {
     @Test
     void testGetComputadoresBySala() {
         // Arrange
-        when(computadorRepository.findBySala(sala1)).thenReturn(computadores);
-        when(computadorRepository.findBySala(sala2)).thenReturn(new ArrayList<>());
+        when(computadorRepository.findBySala(sala1, any(Pageable.class))).thenReturn(new PageImpl<>(computadores));
+        when(computadorRepository.findBySala(sala2, any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
         when(computadorMapper.toComputadoresDTOList(computadores)).thenReturn(computadoresDTO);
         // Act
-        Iterable<ComputadorDTO> result = computadorService.getComputadoresBySala(sala1);
+        Page<ComputadorDTO> result = computadorService.getComputadoresBySala(sala1, any(Pageable.class));
         // Assert
-        assertNotNull(result);
-        assertEquals(computadoresDTO, result);
+        assertNotNull(result.getContent());
+        assertEquals(computadoresDTO, result.getContent());
 
         //Assert exception
-        assertThrows(ComputadorNotFoundException.class, () -> computadorService.getComputadoresBySala(sala2));
+        assertThrows(ComputadorNotFoundException.class, () -> computadorService.getComputadoresBySala(sala2, any(Pageable.class)));
     }
 
     @Test
@@ -75,16 +79,16 @@ class ComputadorServiceTest {
         when(computadorRepository.findAll()).thenReturn(computadores);
         when(computadorMapper.toComputadoresDTOList(computadores)).thenReturn(computadoresDTO);
         // Act
-        Iterable<ComputadorDTO> result = computadorService.getComputadores();
+        Page<ComputadorDTO> result = computadorService.getComputadores(any(Pageable.class));
         // Assert
-        assertNotNull(result);
-        assertEquals(computadoresDTO, result);
+        assertNotNull(result.getContent());
+        assertEquals(computadoresDTO, result.getContent());
 
         //exception
         //arrange
         when(computadorRepository.findAll()).thenReturn(new ArrayList<>());
         //Assert and act
-        assertThrows(ComputadorNotFoundException.class, () -> computadorService.getComputadores());
+        assertThrows(ComputadorNotFoundException.class, () -> computadorService.getComputadores(any(Pageable.class)));
     }
 
     @Test

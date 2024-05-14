@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +46,13 @@ public class ReporteController {
 
 
     @Operation(summary = "Obtener todos los reportes", description = "Obtener todos los reportes", responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenida", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReporteDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "Aun no existen reportes", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenidos")})
     @GetMapping
-    public ResponseEntity<Object> getReportes() {
+    public ResponseEntity<Page<ReporteDTO>> getReportes(Pageable pageable) {
         try {
-            return ResponseEntity.ok(reporteService.getReportes());
+            return ResponseEntity.ok(reporteService.getReportes(pageable));
         } catch (ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
 
@@ -69,39 +70,37 @@ public class ReporteController {
     }
 
     @Operation(summary = "Obtener una lista de reportes por sala", description = "Obtener una reporte lista de reportes por sala", responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenida", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReporteDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "No se encontraron reportes en la sala", content = @Content(schema = @Schema(implementation = String.class)))
-    })
+            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenidos")})
     @GetMapping("/sala/{sala}")
-    public ResponseEntity<Object> getReportesBySala(@PathVariable ESala sala) {
+    public ResponseEntity<Page<ReporteDTO>> getReportesBySala(@PathVariable ESala sala, Pageable pageable) {
         try {
-            return ResponseEntity.ok(reporteService.getReportesBySala(sala));
+            return ResponseEntity.ok(reporteService.getReportesBySala(sala, pageable));
         } catch (ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
 
     @Operation(summary = "Obtener una lista de reportes de un pc", description = "Obtener una lista de reportes de un pc con la sala y el numero del pc", responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenida", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReporteDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "No se encontraron reportes en el pc", content = @Content(schema = @Schema(implementation = String.class)))
-    })
+            @ApiResponse(responseCode = "200", description = "Lista de reportes obtenidos"),
+            @ApiResponse(responseCode = "404", description = "No se encontro el computador", content = @Content(schema = @Schema(implementation = String.class)) ),})
     @GetMapping("Computador/{sala}/{numeroPc}")
-    public ResponseEntity<Object> getReportesByPc(@PathVariable ESala sala, @PathVariable Integer numeroPc) {
+    public ResponseEntity<Page<ReporteDTO>> getReportesByPc(@PathVariable ESala sala, @PathVariable Integer numeroPc, Pageable pageable) {
         try {
-            return ResponseEntity.ok(reporteService.getReportesByPc(sala, numeroPc));
-        } catch (ComputadorNotFoundException | ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.ok(reporteService.getReportesByPc(sala, numeroPc, pageable));
+        } catch (ReporteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
+        } catch (ComputadorNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Page.empty());
         }
     }
     @Operation(summary = "Obtener una lista reporte de reportes por tipo", description = "Obtener una reporte lista de reportes por tipo", responses = {
-            @ApiResponse(responseCode = "200", description = "Reportes encontrados", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReporteDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "No se encontraron los reportes ", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "200", description = "Reportes encontrados")})
     @GetMapping("/tipo/{tipo}")
-    public ResponseEntity<Object> getReportesByTipo(@PathVariable EReporte tipo) {
+    public ResponseEntity<Page<ReporteDTO>> getReportesByTipo(@PathVariable EReporte tipo, Pageable pageable) {
         try {
-            return ResponseEntity.ok(reporteService.getReportesByTipo(tipo));
+            return ResponseEntity.ok(reporteService.getReportesByTipo(tipo, pageable));
         } catch (ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
     @Operation(summary = "Almacenar o desalmacenar un reporte", description = "Almacenar o desalmacenar un reporte", responses = {
@@ -130,14 +129,13 @@ public class ReporteController {
     }
 
     @Operation(summary = "Buscar todos los reportes almacenados o sin almacenar", description = "Busca todos los reportes almacenados o sin almacena ", responses = {
-            @ApiResponse(responseCode = "200", description = "Reportes encontrados", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReporteDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "No se encontraron los reportes ", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "200", description = "Reportes encontrados") })
     @GetMapping("/almacenado/{almacenado}")
-    public ResponseEntity<Object> getReportesByAlmacenado(@PathVariable Boolean almacenado) {
+    public ResponseEntity<Page<ReporteDTO>> getReportesByAlmacenado(@PathVariable Boolean almacenado, Pageable pageable) {
         try {
-            return ResponseEntity.ok(reporteService.getReporteByAlmacenado(almacenado));
+            return ResponseEntity.ok(reporteService.getReporteByAlmacenado(almacenado, pageable));
         } catch (ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
 

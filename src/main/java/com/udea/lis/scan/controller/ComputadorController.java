@@ -3,16 +3,15 @@ package com.udea.lis.scan.controller;
 import com.udea.lis.scan.error.ComputadorNotFoundException;
 import com.udea.lis.scan.error.ComputadorOperationException;
 import com.udea.lis.scan.model.dto.ComputadorDTO;
-import com.udea.lis.scan.model.dto.ReporteDTO;
 import com.udea.lis.scan.model.enums.ESala;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
-import com.udea.lis.scan.service.computadorservice.IComputadorService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +24,13 @@ public class ComputadorController {
     private ComputadorService computadorService;
 
     @Operation(summary = "Obtener los computadores de una sala", description = "Obtener una lista de computadores por el nombre de la sala", responses = {
-            @ApiResponse(responseCode = "200", description = "Computador encontrado", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ComputadorDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "No se encontraron Computadores en la sala", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "200", description = "lista de computadores")})
     @GetMapping("/sala/{sala}")
-    public ResponseEntity<Object> getComputadoresBySala(@PathVariable ESala sala) {
+    public ResponseEntity<Page<ComputadorDTO>> getComputadoresBySala(@PathVariable ESala sala, Pageable pageable) {
         try {
-            return ResponseEntity.ok(computadorService.getComputadoresBySala(sala.name()));
+            return ResponseEntity.ok(computadorService.getComputadoresBySala(sala.name(), pageable));
         } catch (ComputadorNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
 
@@ -49,14 +47,13 @@ public class ComputadorController {
     }
 
     @Operation(summary = "Obtener la lista de todos los computadores", description = "Obtener una lista de todos los computadores existentes", responses = {
-            @ApiResponse(responseCode = "200", description = "Computadores encontrados", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ComputadorDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "Computadores no encontrados", content = @Content(schema = @Schema(implementation = String.class))) })
+            @ApiResponse(responseCode = "200", description = "Computadores encontrados")})
     @GetMapping("/all")
-    public ResponseEntity<Object> getComputadores() {
+    public ResponseEntity<Page<ComputadorDTO>> getComputadores(Pageable pageable) {
         try {
-            return ResponseEntity.ok(computadorService.getComputadores());
+            return ResponseEntity.ok(computadorService.getComputadores(pageable));
         } catch (ComputadorNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
 

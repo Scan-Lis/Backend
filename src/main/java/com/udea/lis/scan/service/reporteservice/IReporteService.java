@@ -3,6 +3,8 @@ package com.udea.lis.scan.service.reporteservice;
 import com.udea.lis.scan.model.dto.ReporteDTO;
 import com.udea.lis.scan.model.enums.EReporte;
 import com.udea.lis.scan.model.enums.ESala;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.List;
@@ -10,15 +12,15 @@ import java.util.List;
 public interface IReporteService {
     public ReporteDTO getReporte(Integer id);
 
-    public List<ReporteDTO> getReportes();
+    public Page<ReporteDTO> getReportes(Pageable pageable);
 
-    public List<ReporteDTO> getReportesByPc(ESala sala, Integer numeroPc);
+    public Page<ReporteDTO> getReportesByPc(ESala sala, Integer numeroPc, Pageable pageable);
 
-    public List<ReporteDTO> getReportesBySala(ESala sala);
+    public Page<ReporteDTO> getReportesBySala(ESala sala, Pageable pageable);
 
-    public List<ReporteDTO> getReportesByTipo(EReporte tipo);
+    public Page<ReporteDTO> getReportesByTipo(EReporte tipo, Pageable pageable);
 
-    public List<ReporteDTO> getReporteByAlmacenado(Boolean almacenado);
+    public Page<ReporteDTO> getReporteByAlmacenado(Boolean almacenado, Pageable pageable);
 
     public ReporteDTO saveReporte(ReporteDTO reporteDTO);
 
