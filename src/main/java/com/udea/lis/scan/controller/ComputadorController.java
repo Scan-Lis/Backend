@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/computador")
 @AllArgsConstructor
-public class ComputadorController {
+public class  ComputadorController {
 
     private ComputadorService computadorService;
 

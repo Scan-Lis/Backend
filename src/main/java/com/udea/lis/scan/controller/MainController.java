@@ -7,7 +7,9 @@ import com.udea.lis.scan.model.mapper.ReporteMapper;
 import com.udea.lis.scan.model.repository.ComputadorRepository;
 import com.udea.lis.scan.model.repository.ReporteRepository;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
+import com.udea.lis.scan.service.problemaservice.ProblemaServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,8 @@ public class MainController {
 
     ComputadorService computadorService;
 
+    ProblemaServiceImpl problemaService;
+
     @GetMapping("/")
     public String hello(){
         String sala = "Telematica";
@@ -37,8 +41,8 @@ public class MainController {
     }
 
     @GetMapping("/test")
-    public String helloTest(){
-        return "Hello Test";
+    public Object helloTest(Pageable pageable){
+        return problemaService.getProblemas(pageable);
     }
 
     @GetMapping("/admin")

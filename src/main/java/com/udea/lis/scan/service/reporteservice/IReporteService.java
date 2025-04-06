@@ -28,4 +28,6 @@ public interface IReporteService {
 
     public ReporteDTO almacenarReporte(Integer id, Boolean almacenaado);
 
+    public Boolean aprobarReporte(Integer id);
+
 }
