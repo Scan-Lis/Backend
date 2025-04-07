@@ -13,6 +13,7 @@ import com.udea.lis.scan.model.mapper.ComputadorMapper;
 import com.udea.lis.scan.model.mapper.ReporteMapper;
 import com.udea.lis.scan.model.repository.ReporteRepository;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
+import com.udea.lis.scan.service.problemaservice.IProblemaService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public  class ReporteServiceImpl implements IReporteService{
 
     private ComputadorService computadorService;
+    private IProblemaService problemaService;
     private ReporteRepository reporteRepository;
     private ReporteMapper reporteMapper;
     private ComputadorMapper computadorMapper;
@@ -127,6 +129,20 @@ public  class ReporteServiceImpl implements IReporteService{
         computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
 
         return reporteMapper.toReporteDTO(reporteActualizado);
+    }
+
+    @Override
+    public Boolean aprobarReporte(Integer id) throws ReporteNotFoundException{
+        Optional<Reporte> reporte = reporteRepository.findById(id);
+        if (!reporte.isPresent()){
+            throw new ReporteNotFoundException("No se encontro reporte con el id: " + id);
+        }
+        Reporte reporteActualizado = reporte.get();
+        if (reporteActualizado.getAlmacenado()){
+            throw new ReporteNotFoundException("el reporte esta almacenado, no se puede aprobar");
+        }
+        boolean problemaCreado = problemaService.crearProblema(reporteActualizado);
+        return problemaCreado;
     }
 
 

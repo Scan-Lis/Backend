@@ -25,4 +25,8 @@ public class Computador {
 
     @OneToMany(mappedBy = "computador", cascade = CascadeType.ALL)
     private List<Reporte> reportes;
+
+    @OneToMany(mappedBy = "computador", cascade = CascadeType.ALL)
+    private List<Problema> problemas;
+
 }

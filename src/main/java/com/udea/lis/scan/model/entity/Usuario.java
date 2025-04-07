@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Getter
@@ -36,6 +37,9 @@ public class Usuario implements UserDetails {
 
     @Column(name = "rol")
     private String rol;
+
+    @OneToMany(mappedBy = "auxiliarAsignado", cascade = CascadeType.ALL)
+    private List<Problema> problemas;
 
 
     //metodos de la interfaz UserDetails

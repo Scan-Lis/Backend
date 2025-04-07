@@ -1,6 +1,7 @@
 package com.udea.lis.scan.controller;
 
 import com.udea.lis.scan.error.ComputadorNotFoundException;
+import com.udea.lis.scan.error.ProblemaNotFoundException;
 import com.udea.lis.scan.error.ReporteNotFoundException;
 import com.udea.lis.scan.error.ReporteOperationException;
 import com.udea.lis.scan.model.dto.ComputadorDTO;
@@ -138,5 +139,24 @@ public class ReporteController {
             return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
+
+    @Operation(summary = "Aprobar un reporte", description = "Aprobar un reporte", responses = {
+            @ApiResponse(responseCode = "200", description = "Reporte aprobado", content = @Content(schema = @Schema(implementation = ReporteDTO.class ))),
+            @ApiResponse(responseCode = "404", description = "No se encontro el reporte", content = @Content(schema = @Schema(implementation = String.class))) })
+    @PostMapping("/aprobar/{id}")
+    public ResponseEntity<Object> aprobarReporte(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(reporteService.aprobarReporte(id));
+        } catch (ReporteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (ProblemaNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+    }
+
+
+
+
 
 }
