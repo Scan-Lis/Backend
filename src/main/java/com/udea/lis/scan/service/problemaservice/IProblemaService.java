@@ -9,28 +9,42 @@ import org.springframework.data.domain.Pageable;
 import java.util.Date;
 
 public interface IProblemaService {
+
+
     Boolean crearProblema(Reporte reporte);
 
     ProblemaDTO getProblema(Integer id);
 
+    //controlado
     public Page<ProblemaDTO> getProblemas(Pageable pageable);
 
+    //controlado
     public Page<ProblemaDTO> getProblemasByPc(ESala sala, Integer numeroPc, Pageable pageable);
 
+
+    //controlado
     public Page<ProblemaDTO> getProblemasBySala(ESala sala, Pageable pageable);
 
+
+    //controlado
     public Page<ProblemaDTO> getProblemasBySolucionado(Boolean solucionado, Pageable pageable);
 
+    //controlado
     public Page<ProblemaDTO> getProblemasByAuxiliarAsignado(String usuario, Pageable pageable);
 
+    //controlado
     public Page<ProblemaDTO> getProblemasByFechaCreacionBetween(Date fechaInicio, Date fechaFin, Pageable pageable);
 
+    //controlado
     public Page<ProblemaDTO> getProblemasByFechaTerminacionBetween(Date fechaInicio, Date fechaFin, Pageable pageable);
 
+    //controlado
     public void deleteProblema(Integer id);
 
+    //controlado
     public ProblemaDTO solucionarProblema(Integer id, Boolean almacenaado);
 
+    //controlado
     public ProblemaDTO asignarProblema(Integer id, String usuario);
 
 }
