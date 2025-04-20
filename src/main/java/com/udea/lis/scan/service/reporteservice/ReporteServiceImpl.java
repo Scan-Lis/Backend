@@ -142,6 +142,10 @@ public  class ReporteServiceImpl implements IReporteService{
             throw new ReporteNotFoundException("el reporte esta almacenado, no se puede aprobar");
         }
         boolean problemaCreado = problemaService.crearProblema(reporteActualizado);
+        if (problemaCreado) {
+            ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(reporte.get().getComputador());
+            computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
+        }
         return problemaCreado;
     }
 

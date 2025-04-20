@@ -6,6 +6,8 @@ import com.udea.lis.scan.model.enums.ESala;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
+
 public interface IProblemaService {
     Boolean crearProblema(Reporte reporte);
 
@@ -21,8 +23,14 @@ public interface IProblemaService {
 
     public Page<ProblemaDTO> getProblemasByAuxiliarAsignado(String usuario, Pageable pageable);
 
+    public Page<ProblemaDTO> getProblemasByFechaCreacionBetween(Date fechaInicio, Date fechaFin, Pageable pageable);
+
+    public Page<ProblemaDTO> getProblemasByFechaTerminacionBetween(Date fechaInicio, Date fechaFin, Pageable pageable);
+
     public void deleteProblema(Integer id);
 
     public ProblemaDTO solucionarProblema(Integer id, Boolean almacenaado);
+
+    public ProblemaDTO asignarProblema(Integer id, String usuario);
 
 }

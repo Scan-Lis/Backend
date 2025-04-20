@@ -4,6 +4,7 @@ import com.udea.lis.scan.error.ComputadorOperationException;
 import com.udea.lis.scan.model.dto.ComputadorDTO;
 import com.udea.lis.scan.model.dto.ReporteDTO;
 import com.udea.lis.scan.model.entity.Computador;
+import com.udea.lis.scan.model.entity.Problema;
 import com.udea.lis.scan.model.entity.Reporte;
 import com.udea.lis.scan.model.enums.EEstado;
 import com.udea.lis.scan.model.mapper.ComputadorMapper;
@@ -83,11 +84,10 @@ public class ComputadorService implements IComputadorService {
         }
         Computador computador = computadorResult.get();
         List<Reporte> reportesDelPc = computador.getReportes();
-
-
+        List<Problema> problemasDelPc = computador.getProblemas();
         if(this.estaEnMantenimiento(false)) { //cambiar mas adelante
             computador.setEstado(EEstado.Mantenimiento.toString());
-        } else if(this.estaFallando(false)) { // cambiar  mas adelante
+        } else if(this.estaFallando(problemasDelPc)) { // cambiar  mas adelante
             computador.setEstado(EEstado.Fallando.toString());
         } else if(this.estaEnAlerta(reportesDelPc)) {
             computador.setEstado(EEstado.Alerta.toString());
@@ -110,8 +110,16 @@ public class ComputadorService implements IComputadorService {
         return false;
     }
 
-    private boolean estaFallando(Boolean parametro) { // de momento no se usa
-        return parametro;
+    private boolean estaFallando( List<Problema> problemasDelPc) {
+        if(problemasDelPc.isEmpty()) {
+            return false;
+        }
+        for (Problema problema : problemasDelPc) {
+            if (problema.getSolucionado() == false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean estaEnMantenimiento( Boolean parametro) { // de momento no se usa
