@@ -141,10 +141,10 @@ public class ProblemaController {
     @Operation(summary = "Obtener problemas por fecha de creación", description = "Obtener problemas creados entre dos fechas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
-    @GetMapping("/fechaCreacion/{fechaInicio}/{fechaFin}")
+    @GetMapping("/fechaCreacion")
     public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaCreacionBetween(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
             Pageable pageable) {
         try {
             return ResponseEntity.ok(problemaService.getProblemasByFechaCreacionBetween(fechaInicio, fechaFin, pageable));
@@ -158,10 +158,10 @@ public class ProblemaController {
     @Operation(summary = "Obtener problemas por fecha de terminación", description = "Obtener problemas terminados entre dos fechas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
-    @GetMapping("/fechaTerminacion/{fechaInicio}/{fechaFin}")
+    @GetMapping("/fechaTerminacion")
     public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaTerminacionBetween(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
             Pageable pageable) {
         try {
             return ResponseEntity.ok(problemaService.getProblemasByFechaTerminacionBetween(fechaInicio, fechaFin, pageable));
@@ -169,6 +169,7 @@ public class ProblemaController {
             return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
+
 
 
 }
