@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -141,7 +142,10 @@ public class ProblemaController {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
     @GetMapping("/fechaCreacion/{fechaInicio}/{fechaFin}")
-    public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaCreacionBetween(@PathVariable Date fechaInicio, @PathVariable Date fechaFin, Pageable pageable) {
+    public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaCreacionBetween(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
+            Pageable pageable) {
         try {
             return ResponseEntity.ok(problemaService.getProblemasByFechaCreacionBetween(fechaInicio, fechaFin, pageable));
         } catch (Exception e) {
@@ -149,15 +153,22 @@ public class ProblemaController {
         }
     }
 
+
+
     @Operation(summary = "Obtener problemas por fecha de terminación", description = "Obtener problemas terminados entre dos fechas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
     @GetMapping("/fechaTerminacion/{fechaInicio}/{fechaFin}")
-    public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaTerminacionBetween(@PathVariable Date fechaInicio, @PathVariable Date fechaFin, Pageable pageable) {
+    public ResponseEntity<Page<ProblemaDTO>> getProblemasByFechaTerminacionBetween(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date fechaFin,
+            Pageable pageable) {
         try {
             return ResponseEntity.ok(problemaService.getProblemasByFechaTerminacionBetween(fechaInicio, fechaFin, pageable));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
+
+
 }
