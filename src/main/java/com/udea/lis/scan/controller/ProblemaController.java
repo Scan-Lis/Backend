@@ -138,6 +138,7 @@ public class ProblemaController {
         }
     }
 
+
     @Operation(summary = "Obtener problemas por fecha de creación", description = "Obtener problemas creados entre dos fechas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
