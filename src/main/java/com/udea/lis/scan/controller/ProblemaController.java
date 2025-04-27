@@ -1,8 +1,11 @@
 package com.udea.lis.scan.controller;
 
+import com.udea.lis.scan.controller.requestModel.AsignarProblemaRequest;
+import com.udea.lis.scan.error.ProblemaNotFoundException;
 import com.udea.lis.scan.model.dto.ProblemaDTO;
 import com.udea.lis.scan.model.entity.Reporte;
 import com.udea.lis.scan.model.enums.ESala;
+import com.udea.lis.scan.service.problemaservice.IProblemaService;
 import com.udea.lis.scan.service.problemaservice.ProblemaServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,7 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ProblemaController {
 
-    private ProblemaServiceImpl problemaService;
+    private IProblemaService problemaService;
 
     @Operation(summary = "Obtener todos los problemas", description = "Obtener todos los problemas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
@@ -32,7 +35,7 @@ public class ProblemaController {
     public ResponseEntity<Page<ProblemaDTO>> getAllProblemas(Pageable pageable) {
         try {
             return ResponseEntity.ok(problemaService.getProblemas(pageable));
-        } catch (Exception e) {
+        } catch (ProblemaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
         }
     }
@@ -45,21 +48,8 @@ public class ProblemaController {
     public ResponseEntity<Object> getProblema(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(problemaService.getProblema(id));
-        } catch (Exception e) {
+        } catch (ProblemaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @Operation(summary = "Crear un problema", description = "Crear un problema a partir de un reporte", responses = {
-            @ApiResponse(responseCode = "200", description = "Problema creado"),
-            @ApiResponse(responseCode = "400", description = "Error al crear el problema")
-    })
-    @PostMapping
-    public ResponseEntity<Object> crearProblema(@RequestBody Reporte reporte) {
-        try {
-            return ResponseEntity.ok(problemaService.crearProblema(reporte));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear el problema");
         }
     }
 
@@ -72,7 +62,7 @@ public class ProblemaController {
         try {
             problemaService.deleteProblema(id);
             return ResponseEntity.ok("Problema eliminado");
-        } catch (Exception e) {
+        } catch (ProblemaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -81,10 +71,17 @@ public class ProblemaController {
             @ApiResponse(responseCode = "200", description = "Problema asignado exitosamente", content = @Content(schema = @Schema(implementation = ProblemaDTO.class))),
             @ApiResponse(responseCode = "404", description = "Problema no encontrado", content = @Content(schema = @Schema(implementation = String.class)))
     })
-    @PostMapping("/asignar/{id}/{usuario}")
-    public ResponseEntity<Object> asignarProblema(@PathVariable Integer id, @PathVariable String usuario) {
+    @PostMapping("/asignar")
+    public ResponseEntity<Object> asignarProblema(@RequestBody AsignarProblemaRequest request) {
         try {
-            return ResponseEntity.ok(problemaService.asignarProblema(id, usuario));
+            if (request.getCorreoUsuario() == null || request.getCorreoUsuario().isEmpty()) {
+                return ResponseEntity.badRequest().body("El correo del usuario no puede estar vacío");
+            }
+            if (request.getId() == null) {
+                return ResponseEntity.badRequest().body("El ID del problema no puede estar vacío");
+            }
+            problemaService.asignarProblema(request.getId(), request.getCorreoUsuario());
+            return ResponseEntity.ok("Problema asignado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -168,6 +165,20 @@ public class ProblemaController {
             return ResponseEntity.ok(problemaService.getProblemasByFechaTerminacionBetween(fechaInicio, fechaFin, pageable));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
+        }
+    }
+
+    //solucionarProblema
+    @Operation(summary = "Solucionar problema", description = "Marcar un problema como solucionado", responses = {
+            @ApiResponse(responseCode = "200", description = "Problema solucionado"),
+            @ApiResponse(responseCode = "404", description = "Problema no encontrado", content = @Content(schema = @Schema(implementation = String.class)))
+    })
+    @PostMapping("/solucionar/{id}")
+    public ResponseEntity<Object> solucionarProblema(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(problemaService.solucionarProblema(id, true));
+        } catch (ProblemaNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

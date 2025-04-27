@@ -85,9 +85,9 @@ public class ComputadorService implements IComputadorService {
         Computador computador = computadorResult.get();
         List<Reporte> reportesDelPc = computador.getReportes();
         List<Problema> problemasDelPc = computador.getProblemas();
-        if(this.estaEnMantenimiento(false)) { //cambiar mas adelante
+        if(this.estaEnMantenimiento(problemasDelPc)) {
             computador.setEstado(EEstado.Mantenimiento.toString());
-        } else if(this.estaFallando(problemasDelPc)) { // cambiar  mas adelante
+        } else if(this.estaFallando(problemasDelPc)) {
             computador.setEstado(EEstado.Fallando.toString());
         } else if(this.estaEnAlerta(reportesDelPc)) {
             computador.setEstado(EEstado.Alerta.toString());
@@ -122,8 +122,17 @@ public class ComputadorService implements IComputadorService {
         return false;
     }
 
-    private boolean estaEnMantenimiento( Boolean parametro) { // de momento no se usa
-        return parametro;
+    private boolean estaEnMantenimiento( List<Problema> problemasDelPc) {
+        if(problemasDelPc.isEmpty()) {
+            return false;
+        }
+        //si hay un problema asignado a un auxiliar y no solucionado
+        for (Problema problema : problemasDelPc) {
+            if (problema.getAuxiliarAsignado() != null && problema.getSolucionado() == false) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

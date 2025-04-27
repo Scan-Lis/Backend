@@ -7,15 +7,18 @@ import com.udea.lis.scan.model.dto.ProblemaDTO;
 import com.udea.lis.scan.model.entity.Computador;
 import com.udea.lis.scan.model.entity.Problema;
 import com.udea.lis.scan.model.entity.Reporte;
+import com.udea.lis.scan.model.entity.Usuario;
 import com.udea.lis.scan.model.enums.ESala;
 import com.udea.lis.scan.model.mapper.ComputadorMapper;
 import com.udea.lis.scan.model.mapper.ProblemaMapper;
 import com.udea.lis.scan.model.repository.ProblemaRepository;
+import com.udea.lis.scan.model.repository.UsuarioRepository;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,6 +32,8 @@ public class ProblemaServiceImpl implements IProblemaService {
     private final ComputadorMapper computadorMapper;
     private ProblemaRepository problemaRepository;
     private ProblemaMapper problemaMapper;
+    private UsuarioRepository usuarioRepository;
+
     public Boolean crearProblema(Reporte reporte) {
         Problema problema = new Problema();
         problema.setDescripcionBase(reporte.getDescripcion());
@@ -123,12 +128,41 @@ public class ProblemaServiceImpl implements IProblemaService {
     }
 
     @Override
-    public ProblemaDTO solucionarProblema(Integer id, Boolean almacenaado) {
-        return null;
+    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado) {
+        Optional<Problema> problema = problemaRepository.findById(id);
+        if (problema.isEmpty()){
+            throw new ProblemaNotFoundException("No existe problema con el id: " + id);
+        }
+        Problema problemaSolucionado = problema.get();
+        if (problemaSolucionado.getFechaTerminacion() != null){
+            throw new ProblemaNotFoundException("El problema ya fue solucionado");
+        }if (problemaSolucionado.getAuxiliarAsignado() == null){
+            throw new ProblemaNotFoundException("El problema no tiene un auxiliar asignado");
+        }
+        problemaSolucionado.setSolucionado(solucionado);
+        problemaSolucionado.setFechaTerminacion(new Date());
+        Problema problemaActualizado = problemaRepository.save(problemaSolucionado);
+        ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(problema.get().getComputador());
+        computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
+        return problemaMapper.toProblemaDTO(problemaActualizado);
     }
 
     @Override
-    public ProblemaDTO asignarProblema(Integer id, String usuario) {
-        return null;
+    public void asignarProblema(Integer id, String correoUsuario) {
+        Optional<Problema> problema = problemaRepository.findById(id);
+        if (problema.isEmpty()){
+            throw new ProblemaNotFoundException("No existe problema con el id: " + id);
+        }
+        Problema problemaAsignado = problema.get();
+        if (problemaAsignado.getAuxiliarAsignado() != null){
+            throw new ProblemaNotFoundException("El problema ya tiene un auxiliar asignado");
+        }
+        Usuario usuario =  usuarioRepository.findByCorreo(correoUsuario);
+        if(usuario == null){
+            throw new UsernameNotFoundException("Usuario no encontrado");
+        }
+        problemaAsignado.setAuxiliarAsignado(usuario);
+        ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(problema.get().getComputador());
+        computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
     }
 }

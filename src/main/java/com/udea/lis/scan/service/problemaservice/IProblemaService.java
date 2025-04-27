@@ -42,9 +42,9 @@ public interface IProblemaService {
     public void deleteProblema(Integer id);
 
     //controlado
-    public ProblemaDTO solucionarProblema(Integer id, Boolean almacenaado);
+    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado);
 
     //controlado
-    public ProblemaDTO asignarProblema(Integer id, String usuario);
+    public void asignarProblema(Integer id, String usuario);
 
 }
