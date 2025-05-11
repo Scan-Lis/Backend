@@ -147,16 +147,8 @@ public class ReporteController {
     public ResponseEntity<Object> aprobarReporte(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(reporteService.aprobarReporte(id));
-        } catch (ReporteNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (ProblemaNotFoundException e) {
+        } catch (ReporteNotFoundException | ProblemaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
     }
-
-
-
-
-
 }

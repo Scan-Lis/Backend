@@ -1,5 +1,6 @@
 package com.udea.lis.scan.service.problemaservice;
 
+import com.udea.lis.scan.model.dto.ObservacionDTO;
 import com.udea.lis.scan.model.dto.ProblemaDTO;
 import com.udea.lis.scan.model.entity.Reporte;
 import com.udea.lis.scan.model.enums.ESala;
@@ -42,9 +43,12 @@ public interface IProblemaService {
     public void deleteProblema(Integer id);
 
     //controlado
-    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado);
+    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado, String descripcionSolucion);
 
     //controlado
     public void asignarProblema(Integer id, String usuario);
+
+    //agregarObservacion
+    public ObservacionDTO agregarObservacion(Integer idProblema, String observacion, String autor);
 
 }

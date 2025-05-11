@@ -143,6 +143,8 @@ public  class ReporteServiceImpl implements IReporteService{
         }
         boolean problemaCreado = problemaService.crearProblema(reporteActualizado);
         if (problemaCreado) {
+            reporteActualizado.setAlmacenado(true);
+            reporteRepository.save(reporteActualizado);
             ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(reporte.get().getComputador());
             computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
         }

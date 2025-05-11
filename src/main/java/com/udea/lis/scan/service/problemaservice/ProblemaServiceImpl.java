@@ -3,6 +3,7 @@ package com.udea.lis.scan.service.problemaservice;
 import com.udea.lis.scan.error.ProblemaNotFoundException;
 import com.udea.lis.scan.error.ReporteNotFoundException;
 import com.udea.lis.scan.model.dto.ComputadorDTO;
+import com.udea.lis.scan.model.dto.ObservacionDTO;
 import com.udea.lis.scan.model.dto.ProblemaDTO;
 import com.udea.lis.scan.model.entity.Computador;
 import com.udea.lis.scan.model.entity.Problema;
@@ -14,6 +15,7 @@ import com.udea.lis.scan.model.mapper.ProblemaMapper;
 import com.udea.lis.scan.model.repository.ProblemaRepository;
 import com.udea.lis.scan.model.repository.UsuarioRepository;
 import com.udea.lis.scan.service.computadorservice.ComputadorService;
+import com.udea.lis.scan.service.observacionservice.IObservacionService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +35,7 @@ public class ProblemaServiceImpl implements IProblemaService {
     private ProblemaRepository problemaRepository;
     private ProblemaMapper problemaMapper;
     private UsuarioRepository usuarioRepository;
+    private IObservacionService observacionService;
 
     public Boolean crearProblema(Reporte reporte) {
         Problema problema = new Problema();
@@ -43,6 +46,14 @@ public class ProblemaServiceImpl implements IProblemaService {
         problema.setAuxiliarAsignado(null);
         problema.setComputador(reporte.getComputador());
         Problema problemaCreado = problemaRepository.save(problema);
+        if(problemaRepository.existsById(problemaCreado.getId())){
+            ObservacionDTO observacionDTO = ObservacionDTO.builder()
+                    .descripcion(reporte.getDescripcion())
+                    .autor("Sistema")
+                    .problemaId(problemaCreado.getId())
+                    .build();
+            observacionService.save(observacionDTO);
+        }
         return problemaRepository.existsById(problemaCreado.getId());
     }
 
@@ -128,7 +139,7 @@ public class ProblemaServiceImpl implements IProblemaService {
     }
 
     @Override
-    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado) {
+    public ProblemaDTO solucionarProblema(Integer id, Boolean solucionado, String descripcionSolucion) {
         Optional<Problema> problema = problemaRepository.findById(id);
         if (problema.isEmpty()){
             throw new ProblemaNotFoundException("No existe problema con el id: " + id);
@@ -144,6 +155,12 @@ public class ProblemaServiceImpl implements IProblemaService {
         Problema problemaActualizado = problemaRepository.save(problemaSolucionado);
         ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(problema.get().getComputador());
         computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
+        ObservacionDTO observacionDTO = ObservacionDTO.builder()
+                .descripcion(descripcionSolucion)
+                .autor(problemaSolucionado.getAuxiliarAsignado().getCorreo())
+                .problemaId(problemaActualizado.getId())
+                .build();
+        observacionService.save(observacionDTO);
         return problemaMapper.toProblemaDTO(problemaActualizado);
     }
 
@@ -164,5 +181,22 @@ public class ProblemaServiceImpl implements IProblemaService {
         problemaAsignado.setAuxiliarAsignado(usuario);
         ComputadorDTO computadorDTO = computadorMapper.toComputadorDTO(problema.get().getComputador());
         computadorService.actualizarEstado(computadorDTO.getSala().toString(), computadorDTO.getNumeroPc());
+
+        ObservacionDTO observacionDTO = ObservacionDTO.builder()
+                .descripcion("Problema asignado a " + usuario.getCorreo())
+                .autor(usuario.getCorreo())
+                .problemaId(problemaAsignado.getId())
+                .build();
+        observacionService.save(observacionDTO);
+    }
+
+    @Override
+    public ObservacionDTO agregarObservacion(Integer idProblema, String observacion, String autor) {
+        ObservacionDTO observacionDTO = ObservacionDTO.builder()
+                .descripcion(observacion)
+                .autor(autor)
+                .problemaId(idProblema)
+                .build();
+        return observacionService.save(observacionDTO);
     }
 }

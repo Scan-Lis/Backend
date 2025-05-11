@@ -1,10 +1,13 @@
 package com.udea.lis.scan.controller;
 
 import com.udea.lis.scan.controller.requestModel.AsignarProblemaRequest;
+import com.udea.lis.scan.controller.requestModel.ObservacionRequest;
 import com.udea.lis.scan.error.ProblemaNotFoundException;
+import com.udea.lis.scan.model.dto.ObservacionDTO;
 import com.udea.lis.scan.model.dto.ProblemaDTO;
 import com.udea.lis.scan.model.entity.Reporte;
 import com.udea.lis.scan.model.enums.ESala;
+import com.udea.lis.scan.service.observacionservice.ObservacionServiceImpl;
 import com.udea.lis.scan.service.problemaservice.IProblemaService;
 import com.udea.lis.scan.service.problemaservice.ProblemaServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +29,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ProblemaController {
 
+    private final ObservacionServiceImpl observacionServiceImpl;
     private IProblemaService problemaService;
 
     @Operation(summary = "Obtener todos los problemas", description = "Obtener todos los problemas", responses = {
@@ -151,8 +155,6 @@ public class ProblemaController {
         }
     }
 
-
-
     @Operation(summary = "Obtener problemas por fecha de terminación", description = "Obtener problemas terminados entre dos fechas", responses = {
             @ApiResponse(responseCode = "200", description = "Problemas encontrados")
     })
@@ -174,14 +176,37 @@ public class ProblemaController {
             @ApiResponse(responseCode = "404", description = "Problema no encontrado", content = @Content(schema = @Schema(implementation = String.class)))
     })
     @PostMapping("/solucionar/{id}")
-    public ResponseEntity<Object> solucionarProblema(@PathVariable Integer id) {
+    public ResponseEntity<Object> solucionarProblema(@PathVariable Integer id, @RequestBody String descripcionSolucion) {
         try {
-            return ResponseEntity.ok(problemaService.solucionarProblema(id, true));
+            return ResponseEntity.ok(problemaService.solucionarProblema(id, true, descripcionSolucion));
         } catch (ProblemaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-
+    @Operation(summary = "Agregar una observación a un problema", description = "Agregar una observación a un problema", responses = {
+            @ApiResponse(responseCode = "200", description = "Observación agregada"),
+            @ApiResponse(responseCode = "404", description = "Problema no encontrado", content = @Content(schema = @Schema(implementation = String.class)))
+    })
+    @PostMapping("/agregarObservacion/{id}")
+    public ResponseEntity<Object> agregarObservacion(@PathVariable Integer id, @RequestBody ObservacionRequest observacionRequest) {
+        try {
+            return ResponseEntity.ok(problemaService.agregarObservacion(id, observacionRequest.getObservacion(), observacionRequest.getAutor()));
+        } catch (ProblemaNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    //todas las observaciones de un problema
+    @Operation(summary = "Obtener todas las observaciones de un problema", description = "Obtener todas las observaciones de un problema", responses = {
+            @ApiResponse(responseCode = "200", description = "Observaciones encontradas"),
+    })
+    @GetMapping("/observaciones/{idProblema}")
+    public ResponseEntity<Page<ObservacionDTO>> getObservacionesByProblema(@PathVariable Integer idProblema, Pageable pageable) {
+        try {
+            return ResponseEntity.ok(observacionServiceImpl.findByProblemaId(idProblema, pageable));
+        } catch (ProblemaNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(Page.empty());
+        }
+    }
 
 }

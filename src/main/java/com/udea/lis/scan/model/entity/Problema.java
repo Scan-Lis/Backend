@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Getter
@@ -38,5 +39,8 @@ public class Problema {
     @ManyToOne
     @JoinColumn(name = "fk_pc", nullable = false)
     private Computador computador;
+
+    @OneToMany(mappedBy = "problema", cascade = CascadeType.ALL)
+    private List<Observacion> observaciones;
 
 }

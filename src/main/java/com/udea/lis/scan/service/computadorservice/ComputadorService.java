@@ -94,7 +94,6 @@ public class ComputadorService implements IComputadorService {
         } else {
             computador.setEstado(EEstado.Funcionando.toString());
         }
-
         computadorRepository.save(computador);
     }
 
@@ -126,7 +125,6 @@ public class ComputadorService implements IComputadorService {
         if(problemasDelPc.isEmpty()) {
             return false;
         }
-        //si hay un problema asignado a un auxiliar y no solucionado
         for (Problema problema : problemasDelPc) {
             if (problema.getAuxiliarAsignado() != null && problema.getSolucionado() == false) {
                 return true;
