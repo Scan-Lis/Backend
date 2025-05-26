@@ -30,9 +30,9 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         String[] adminEndpoints = {
-                "/computador/**", "/user/**"};
+                 "/user/**"};
         String[] adminAuxEndpoints = {
-                "/reporte/**", "/problema/**"
+                "/reporte/**", "/problema/**", "/computador/**"
         };
         return httpSecurity
                 .csrf(config -> config.disable())
@@ -51,7 +51,6 @@ public class SpringSecurityConfig {
                             "/swagger-ui.html",
                             "/v1/swagger-ui/**"
                     ).permitAll();
-                    auth.requestMatchers("/reporte").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
 
                     auth.anyRequest().authenticated();
