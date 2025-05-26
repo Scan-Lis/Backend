@@ -2,6 +2,7 @@ package com.udea.lis.scan.controller;
 
 import com.udea.lis.scan.error.UserNotFoundException;
 import com.udea.lis.scan.model.dto.UsuarioDTO;
+import com.udea.lis.scan.service.auth.AuthService;
 import com.udea.lis.scan.service.userservice.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
      private final IUserService userService;
+     private final AuthService authService;
 
-     @GetMapping("/all")
+
+    @GetMapping("/all")
      @Operation(summary = "Obtener todos los usuarios", description = "Obtener una lista de todos los usuarios", responses = {
              @ApiResponse(responseCode = "200", description = "lista de usuarios")})
      public ResponseEntity<Page<UsuarioDTO>> getAllUsers(Pageable pageable) {
@@ -96,6 +99,18 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Cambiar contraseña de un usuario", description = "Permite a un administrador cambiar la contraseña de un usuario", responses = {
+            @ApiResponse(responseCode = "200", description = "Contraseña cambiada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content(schema = @Schema(implementation = String.class))) })
+    @PutMapping("/admin/change-password")
+    public ResponseEntity<String> changePasswordByAdmin(@RequestParam String email, @RequestParam String newPassword) {
+        try {
+            authService.changePasswordByAdmin(email, newPassword);
+            return ResponseEntity.ok("Contraseña cambiada exitosamente");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 
 }

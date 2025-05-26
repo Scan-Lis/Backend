@@ -1,5 +1,6 @@
 package com.udea.lis.scan.service.auth;
 
+import com.udea.lis.scan.error.UserNotFoundException;
 import com.udea.lis.scan.model.dto.UsuarioDTO;
 import com.udea.lis.scan.model.dto.auth.LoginUserDto;
 import com.udea.lis.scan.model.dto.auth.ResponseAuth;
@@ -25,6 +26,16 @@ public class AuthService implements UserDetailsService {
     private UsuarioMapper usuarioMapper;
     private JwtService jwtService;
     private PasswordEncoder passwordEncoder;
+
+    public void changePasswordByAdmin(String email, String newPassword) throws UserNotFoundException {
+        Usuario usuario = usuarioRepository.findByCorreo(email);
+
+        if (usuario == null) {
+            throw new UserNotFoundException("Usuario no encontrado con el correo: " + email);
+        }
+        usuario.setContrasena(passwordEncoder.encode(newPassword));
+        usuarioRepository.save(usuario);
+    }
 
     public ResponseAuth registro(UsuarioDTO createUserDto){
         Usuario usuario = usuarioMapper.toUsuario(createUserDto);
