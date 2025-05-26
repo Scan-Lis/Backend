@@ -34,19 +34,13 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         DecodedJWT decodedJWT = jwtService.validateToken(token);
-
         String username = jwtService.getUsername(decodedJWT);
         String rolString = decodedJWT.getClaim("rol").asString();
         GrantedAuthority rol  = new SimpleGrantedAuthority(rolString);
-
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(username, null, List.of(rol)));
         SecurityContextHolder.setContext(context);
-
-
-
         filterChain.doFilter(request, response);
     }
 

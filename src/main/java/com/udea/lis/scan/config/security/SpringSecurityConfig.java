@@ -29,14 +29,31 @@ public class SpringSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        String[] adminEndpoints = {
+                "/computador/**", "/user/**"};
+        String[] adminAuxEndpoints = {
+                "/reporte/**", "/problema/**"
+        };
         return httpSecurity
                 .csrf(config -> config.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN");
-                    auth.requestMatchers(HttpMethod.GET, "/auxiliar").hasRole("AUXILIAR");
-                    auth.requestMatchers("/**").permitAll();
+                    auth.requestMatchers(adminEndpoints).hasRole("ADMIN");
+                    auth.requestMatchers(adminAuxEndpoints).hasAnyRole("ADMIN", "AUXILIAR");
+                    // SOLO ADMIN: guardar y eliminar computador
+                    auth.requestMatchers(HttpMethod.POST, "/computador").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/computador/**").hasRole("ADMIN");
+                    // ✅ Permitir guardar reportes sin autenticación
+                    auth.requestMatchers(HttpMethod.POST, "/reporte").permitAll();
+                    auth.requestMatchers(
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v1/swagger-ui/**"
+                    ).permitAll();
+                    auth.requestMatchers("/reporte").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
+
                     auth.anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtFilter(jwtService), BasicAuthenticationFilter.class)
