@@ -34,13 +34,14 @@ public class SpringSecurityConfig {
         String[] adminAuxEndpoints = {
                 "/reporte/**", "/problema/**", "/computador/**"
         };
+        //permitir el cors para todas las rutas
         return httpSecurity
                 .csrf(config -> config.disable())
+                .cors(cors -> cors.disable()) // Deshabilitar CORS, ya que se maneja en CorsConfig
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(adminEndpoints).hasRole("ADMIN");
                     auth.requestMatchers(adminAuxEndpoints).hasAnyRole("ADMIN", "AUXILIAR");
-                    // SOLO ADMIN: guardar y eliminar computador
                     auth.requestMatchers(HttpMethod.POST, "/computador").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.DELETE, "/computador/**").hasRole("ADMIN");
                     // ✅ Permitir guardar reportes sin autenticación

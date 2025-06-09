@@ -9,10 +9,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                //.allowedOrigins("http://localhost:3000", "https://scanlis-frontend.vercel.app/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*");
+        registry.addMapping("/**") // permite todas las rutas
+                .allowedOrigins("*") // permite todos los orígenes
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
