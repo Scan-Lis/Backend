@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthController {
     private AuthService authService;
+
     @Operation(summary = "Login", description = "Login para obtener token de autenticación", tags = { "authenticaction" } , responses = {
             @ApiResponse(responseCode = "200", description = "Successful login", content = @Content(schema = @Schema(implementation = ResponseAuth.class ))),
             @ApiResponse(responseCode = "400", description = "Usuario o contraseña incorrectos", content = @Content(schema = @Schema(implementation = String.class))) })
