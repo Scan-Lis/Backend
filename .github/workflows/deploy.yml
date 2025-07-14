@@ -34,6 +34,10 @@ jobs:
       
       - name: Esperar a que la VPN se conecte
         run: sleep 15
+      - name: Verificar rutas activas
+        run: |
+          ip route
+          ip a
       - name: Verificar conectividad
         run: ping -c 4 ${{ secrets.SSH_HOST }}
       - name: Despliegue por SSH
