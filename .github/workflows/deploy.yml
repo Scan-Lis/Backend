@@ -6,43 +6,45 @@ on:
       - deploy
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   deployd:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Clone repository
-      run: |
-        git clone https://${{ secrets.USER_GI}}:${{ secrets.TOKEN_GI }}@${{secrets.REPOSITORY}}
-      env:
-        GH_TOKEN: ${{ secrets.TOKEN_GI }}
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install OpenVPN
-      run: sudo apt-get install openvpn
+      - name: Clone repo secundario con archivos VPN
+        run: |
+          git clone https://${{ secrets.USER_GI }}:${{ secrets.TOKEN_GI }}@${{ secrets.REPOSITORY }}
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_GI }}
 
-    - name: Move the dir to configuration openvpn
-      run: |
-        sudo mv ./dataSSHScanLis/ /etc/openvpn/
+      - name: Instalar OpenVPN
+        run: sudo apt-get install openvpn -y
 
-    - name: cd to certs and run openvpn
-      run: |
-        cd /etc/openvpn/dataSSHScanLis
-        sudo openvpn --config ${{secrets.CERT}} &
+      - name: Mover configuración de VPN a /etc/openvpn
+        run: |
+          sudo mv ./dataSSHScanLis/ /etc/openvpn/
 
-    - name: Esperar 15 segundos
-      run: sleep 10
+      - name: Iniciar OpenVPN con configuración y credenciales
+        run: |
+          cd /etc/openvpn/dataSSHScanLis
+          sudo openvpn --config ${{ secrets.CERT }} &
+      
+      - name: Esperar a que la VPN se conecte
+        run: sleep 15
 
-    - name: SSH Deployment
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd ${{ secrets.WORK_DIR}}
-          git pull 
-          git checkout deploy 
-          docker compose down 
-          docker compose build -q
-          docker compose up -d
+      - name: Despliegue por SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            git pull
+            git checkout deploy
+            docker compose down
+            docker compose build -q
+            docker compose up -d
