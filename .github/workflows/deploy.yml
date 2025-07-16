@@ -39,7 +39,7 @@ jobs:
           ip route
           ip a
       - name: Verificar conectividad
-        run: ping -c 4 ${{ secrets.SSH_HOST }}
+        run: ping -c 10 192.168.30.159
       - name: Despliegue por SSH
         uses: appleboy/ssh-action@master
         with:
