@@ -43,7 +43,7 @@ jobs:
           script: |
             cd ${{ secrets.WORK_DIR }}
             git pull
-            git checkout deploy
+            git checkout production
             docker compose down
             docker compose build -q
             docker compose up -d
