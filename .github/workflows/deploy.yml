@@ -41,7 +41,7 @@ jobs:
       - name: Ver traceroute
         run: |
           sudo apt update && sudo apt install -y traceroute
-          traceroute 192.168.30.X
+          traceroute 10 192.168.30.159
       - name: Verificar conectividad
         run: ping -c 10 192.168.30.159
       - name: Despliegue por SSH
