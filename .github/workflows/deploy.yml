@@ -38,10 +38,11 @@ jobs:
         run: |
           ip route
           ip a
-      - name: Ver traceroute
+      - name: Mostrar dirección IP sin que GitHub la oculte
         run: |
-          sudo apt update && sudo apt install -y traceroute
-          traceroute 10 192.168.30.159
+          IP="192.168.30.159"
+          echo "Haciendo traceroute a $IP"
+          traceroute $IP
           
       - name: Verificar conectividad
         run: ping -c 10 192.168.30.159
