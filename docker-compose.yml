@@ -9,12 +9,14 @@ services:
   springboot-app:
     env_file:
       - .env
-    build:
+       build:
       context: .
       dockerfile: Dockerfile
       args:
         - MAVEN_PROFILE=prod
-    ports:
+    environment: 
+      - SPRING_PROFILES_ACTIVE=prod 
+     ports:
       - "8080:8080"
     depends_on:
       - postgres
